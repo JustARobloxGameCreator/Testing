@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprunki Data</title>
+</head>
+<body>
+  <h1>Sprunki Shop</h1>
+  <div id="items"></div>
+
+  <script>
+    fetch('/api/data')
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById('items');
+        
+        data.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'item';
+          div.innerHTML = `
+            <h3>${item.Name}</h3>
+            <p><strong>Price:</strong> $${item.Price.toLocaleString()}</p>
+            <p><strong>Amount:</strong> ${item.Amount}</p>
+          `;
+          container.appendChild(div);
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('items').innerHTML = '<p>Error loading data</p>';
+      });
+  </script>
+</body>
+</html>
