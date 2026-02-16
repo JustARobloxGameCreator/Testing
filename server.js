@@ -1,40 +1,30 @@
 const express = require('express');
-const { MongoClient } = require('mongodb');
+const { Pool } = require('pg');
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Replace with YOUR Atlas connection string
-const uri = "mongodb://localhost:27017";
-const client = new MongoClient(uri);
+// Connection string do Supabase (COLE AQUI)
+const connectionString = "postgresql://postgres:9c6de99cc7fc0501e7120672ea6f1024739494b3@db.strkpnvindjzneebybzz.supabase.co:5432/postgres";
+
+const pool = new Pool({
+  connectionString: connectionString,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 app.use(express.static('public'));
 
 app.get('/api/data', async (req, res) => {
   try {
-    console.log("=== API CALLED ===");
-    console.log("Connecting to MongoDB...");
-    
-    await client.connect();
-    console.log("✓ Connected to MongoDB");
-    
-    const db = client.db("Sprunki");
-    console.log("✓ Selected database: Sprunki");
-    
-    const collection = db.collection("Sprunki");
-    console.log("✓ Selected collection: Sprunki");
-    
-    const data = await collection.find({}).toArray();
-    console.log("✓ Data retrieved:");
-    console.log(data);
-    console.log("Type of data:", typeof data);
-    console.log("Is array?", Array.isArray(data));
-    
-    res.json(data);
+    console.log("Buscando dados do Supabase...");
+    const result = await pool.query('SELECT * FROM "Items"');
+    console.log("✓ Dados:", result.rows);
+    res.json(result.rows);
   } catch (error) {
-    console.error("❌ ERROR:", error.message);
-    console.error("Full error:", error);
+    console.error("❌ ERRO:", error.message);
     res.status(500).json({ error: error.message });
   }
 });
@@ -47,6 +37,6 @@ module.exports = app;
 
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
   });
 }
