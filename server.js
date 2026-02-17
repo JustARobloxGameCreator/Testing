@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Connection string do Supabase (COLE AQUI)
-const connectionString = "postgresql://postgres:9c6de99cc7fc0501e7120672ea6f1024739494b3@db.strkpnvindjzneebybzz.supabase.co:5432/postgres";
+const connectionString = process.env.DATABASE_URL || "postgresql://postgres:9c6de99cc7fc0501e7120672ea6f1024739494b3@db.strkpnvindjzneebybzz.supabase.co:5432/postgres";
 
 const pool = new Pool({
   connectionString: connectionString,
