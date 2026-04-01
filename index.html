@@ -25,21 +25,50 @@
                 .from('Sprunkis')
                 .select('id, Name, qtd, price')
 
+            const output = document.getElementById('output')
+
             if (error) {
                 console.error(error)
+                if (output) {
+                    output.textContent = 'Error loading products. Please try again later.'
+                }
                 return
             }
 
-            const output = document.getElementById('output')
-            output.innerHTML = data.map(item => `
-                <div>
-                    <h2>${item.Name}</h2>
-                    <p>Amount available: ${item.qtd}</p>
-                    <p>Price: ${item.price}</p>
-                    button onclick="alert('You bought ${item.Name}!')">Buy</button>
-                </div>
-                <hr>
-            `).join('')
+            if (!output) {
+                console.error('Output element not found')
+                return
+            }
+
+            output.innerHTML = ''
+
+            data.forEach(item => {
+                const container = document.createElement('div')
+
+                const title = document.createElement('h2')
+                title.textContent = item.Name
+                container.appendChild(title)
+
+                const qtyParagraph = document.createElement('p')
+                qtyParagraph.textContent = 'Amount available: ' + item.qtd
+                container.appendChild(qtyParagraph)
+
+                const priceParagraph = document.createElement('p')
+                priceParagraph.textContent = 'Price: ' + item.price
+                container.appendChild(priceParagraph)
+
+                const button = document.createElement('button')
+                button.textContent = 'Buy'
+                button.addEventListener('click', function() {
+                    alert('You bought ' + item.Name + '!')
+                })
+                container.appendChild(button)
+
+                output.appendChild(container)
+
+                const hr = document.createElement('hr')
+                output.appendChild(hr)
+            })
         }
 
         loadData()
