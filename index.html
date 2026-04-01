@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprunki Shop</title>
+</head>
+<body>
+    <h1>Sprunki Shop</h1>
+    <p>Welcome to the Sprunki Shop!</p>
+
+    <div id="output"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const { createClient } = supabase
+
+        const client = createClient(
+            'https://kgnqowborkiylzdrytml.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtnbnFvd2JvcmtpeWx6ZHJ5dG1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5NzU0MjEsImV4cCI6MjA5MDU1MTQyMX0.W1SvJBg1Z9L6UxfPDK85OK2tzNcSAKmLz43_W0WGboo'
+        )
+
+        async function loadData() {
+            const { data, error } = await client
+                .from('Sprunkis')
+                .select('id, Name, qtd, price')
+
+            if (error) {
+                console.error(error)
+                return
+            }
+
+            const output = document.getElementById('output')
+            output.innerHTML = data.map(item => `
+                <div>
+                    <h2>${item.Name}</h2>
+                    <p>Amount available: ${item.qtd}</p>
+                    <p>Price: ${item.price}</p>
+                    button onclick="alert('You bought ${item.Name}!')">Buy</button>
+                </div>
+                <hr>
+            `).join('')
+        }
+
+        loadData()
+    </script>
+</body>
+</html>
